@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitetura Web - Fluxo Educacional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .step-card.active {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+        .flow-arrow {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .code-example {
+            background: #1e293b;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+        }
+        .highlight {
+            background: linear-gradient(120deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="mb-4">
+                <button onclick="window.location.href='index.html'" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    ← Voltar ao Início
+                </button>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🏗️ Arquitetura Web Conceitual</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Explore como funciona um sistema web moderno através de suas camadas e componentes
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-600">Progresso do Aprendizado</span>
+                <span class="text-sm text-gray-600"><span id="progress-text">0</span>/5 Camadas</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Architecture Overview -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12">
+            <!-- Cliente (Front-end) -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="1">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🖥️</div>
+                    <h3 class="text-lg font-bold text-blue-600 mb-2">Cliente</h3>
+                    <p class="text-sm text-gray-600">Front-end</p>
+                    <div class="mt-4 space-y-1">
+                        <span class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">HTML</span>
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">CSS</span>
+                        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="flex items-center justify-center">
+                <div class="flow-arrow text-2xl text-blue-500">→</div>
+            </div>
+
+            <!-- Servidor (Back-end) -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="2">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">⚙️</div>
+                    <h3 class="text-lg font-bold text-green-600 mb-2">Servidor</h3>
+                    <p class="text-sm text-gray-600">Back-end Java</p>
+                    <div class="mt-4 space-y-1">
+                        <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Spring Boot</span>
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">API REST</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="flex items-center justify-center">
+                <div class="flow-arrow text-2xl text-green-500">→</div>
+            </div>
+
+            <!-- Banco de Dados -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="3">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🗄️</div>
+                    <h3 class="text-lg font-bold text-purple-600 mb-2">Banco</h3>
+                    <p class="text-sm text-gray-600">Dados</p>
+                    <div class="mt-4 space-y-1">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">MySQL</span>
+                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Content Area -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div id="content-area">
+                <div class="text-center py-12">
+                    <div class="text-6xl mb-4">🎯</div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Bem-vindo ao Aprendizado!</h2>
+                    <p class="text-gray-600 mb-6">Clique em qualquer camada acima para começar a explorar a arquitetura web</p>
+                    <button onclick="startTour()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        🚀 Iniciar Tour Guiado
+                    </button>
+                    <button onclick="window.location.href='quiz.html'" class="ml-4 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        🧠 Iniciar Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication & Infrastructure -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Communication -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="4">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🔄</div>
+                    <h3 class="text-lg font-bold text-indigo-600 mb-2">Comunicação</h3>
+                    <p class="text-sm text-gray-600">HTTP/HTTPS + JSON</p>
+                    <div class="mt-4 space-y-1">
+                        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">REST API</span>
+                        <span class="inline-block bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded">JSON</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infrastructure -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="5">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">☁️</div>
+                    <h3 class="text-lg font-bold text-teal-600 mb-2">Infraestrutura</h3>
+                    <p class="text-sm text-gray-600">Deploy & Segurança</p>
+                    <div class="mt-4 space-y-1">
+                        <span class="inline-block bg-teal-100 text-teal-800 text-xs px-2 py-1 rounded">AWS</span>
+                        <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">Docker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-8 text-white text-center" style="display: none;">
+            <h3 class="text-2xl font-bold mb-4">🧠 Teste seu Conhecimento!</h3>
+            <p class="mb-6">Você completou o tour! Que tal testar o que aprendeu?</p>
+            <button onclick="startQuiz()" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Iniciar Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let completedSteps = new Set();
+
+        const stepContents = {
+            1: {
+                title: "🖥️ Cliente (Front-end)",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">O que é o Cliente?</h3>
+                            <p class="text-gray-700 mb-4">
+                                O <span class="highlight">navegador do usuário</span> (Chrome, Firefox, Safari) que executa o código front-end.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-orange-500 text-2xl mb-2">📄</div>
+                                    <h4 class="font-bold text-orange-600">HTML</h4>
+                                    <p class="text-sm text-gray-600">Estrutura da página</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-blue-500 text-2xl mb-2">🎨</div>
+                                    <h4 class="font-bold text-blue-600">CSS</h4>
+                                    <p class="text-sm text-gray-600">Estilo e aparência</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-yellow-500 text-2xl mb-2">⚡</div>
+                                    <h4 class="font-bold text-yellow-600">JavaScript</h4>
+                                    <p class="text-sm text-gray-600">Lógica e interação</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-3">🔧 Principais Funções:</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Renderizar a interface gráfica</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Capturar ações do usuário (cliques, formulários)</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Fazer requisições HTTP ao back-end</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Mostrar dados vindos do servidor</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-example p-4 rounded-lg">
+                            <p class="text-green-400 mb-2">// Exemplo de requisição do front-end</p>
+                            <p class="text-blue-300">fetch<span class="text-white">(</span><span class="text-yellow-300">'/api/produtos'</span><span class="text-white">)</span></p>
+                            <p class="text-white ml-4">.then<span class="text-white">(</span><span class="text-blue-300">response</span> <span class="text-white">=></span> <span class="text-blue-300">response</span>.json<span class="text-white">())</span></p>
+                            <p class="text-white ml-4">.then<span class="text-white">(</span><span class="text-blue-300">produtos</span> <span class="text-white">=></span> <span class="text-blue-300">exibirProdutos</span><span class="text-white">(</span><span class="text-blue-300">produtos</span><span class="text-white">));</span></p>
+                        </div>
+                    </div>
+                `
+            },
+            2: {
+                title: "⚙️ Servidor (Back-end Java)",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">O que é o Servidor?</h3>
+                            <p class="text-gray-700 mb-4">
+                                Aplicação <span class="highlight">Java</span> rodando em um servidor, processando regras de negócio e APIs.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-red-500 text-2xl mb-2">🍃</div>
+                                    <h4 class="font-bold text-red-600">Spring Boot</h4>
+                                    <p class="text-sm text-gray-600">Framework Java popular</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-purple-500 text-2xl mb-2">🔌</div>
+                                    <h4 class="font-bold text-purple-600">API REST</h4>
+                                    <p class="text-sm text-gray-600">Endpoints HTTP</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-3">🎯 Responsabilidades:</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Receber requisições HTTP do front-end</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Processar regras de negócio</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Comunicar-se com o banco de dados</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Retornar respostas em JSON</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-blue-800 mb-3">📡 Exemplos de Endpoints:</h4>
+                            <div class="space-y-2 font-mono text-sm">
+                                <div class="flex items-center">
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded mr-3">GET</span>
+                                    <span>/api/produtos → lista produtos</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-3">POST</span>
+                                    <span>/api/pedidos → cria um pedido</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded mr-3">PUT</span>
+                                    <span>/api/usuarios/123 → atualiza usuário</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                title: "🗄️ Banco de Dados",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-purple-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">O que é o Banco de Dados?</h3>
+                            <p class="text-gray-700 mb-4">
+                                Sistema que <span class="highlight">armazena informações permanentes</span> de forma organizada e segura.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-blue-500 text-2xl mb-2">🐬</div>
+                                    <h4 class="font-bold text-blue-600">MySQL</h4>
+                                    <p class="text-sm text-gray-600">Banco relacional popular</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-green-500 text-2xl mb-2">🐘</div>
+                                    <h4 class="font-bold text-green-600">PostgreSQL</h4>
+                                    <p class="text-sm text-gray-600">Banco robusto e avançado</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-green-500 text-2xl mb-2">🍃</div>
+                                    <h4 class="font-bold text-green-600">MongoDB</h4>
+                                    <p class="text-sm text-gray-600">Banco NoSQL (documentos)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-3">💾 O que armazena:</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl mb-2">👥</div>
+                                    <p class="text-sm font-semibold">Usuários</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl mb-2">📦</div>
+                                    <p class="text-sm font-semibold">Produtos</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl mb-2">🛒</div>
+                                    <p class="text-sm font-semibold">Pedidos</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl mb-2">📊</div>
+                                    <p class="text-sm font-semibold">Relatórios</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                            <h4 class="font-bold text-red-800 mb-2">⚠️ Regra Importante:</h4>
+                            <p class="text-red-700">
+                                O banco <strong>nunca</strong> fala diretamente com o cliente. Apenas o back-end interage com ele!
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            4: {
+                title: "🔄 Camada de Comunicação",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-indigo-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-4">Como as Camadas se Comunicam?</h3>
+                            <p class="text-gray-700 mb-4">
+                                Através de <span class="highlight">HTTP/HTTPS</span> usando APIs REST que trocam dados em formato JSON.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border-2 border-indigo-200">
+                            <h4 class="font-bold text-indigo-800 mb-4">🔄 Fluxo Completo de uma Requisição:</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-3 bg-blue-50 rounded-lg">
+                                    <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                                    <div>
+                                        <p class="font-semibold">Usuário clica em "Ver produtos"</p>
+                                        <p class="text-sm text-gray-600">Ação no navegador</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4 p-3 bg-green-50 rounded-lg">
+                                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                                    <div>
+                                        <p class="font-semibold">Front-end faz GET /api/produtos</p>
+                                        <p class="text-sm text-gray-600">Requisição HTTP</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4 p-3 bg-purple-50 rounded-lg">
+                                    <div class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                                    <div>
+                                        <p class="font-semibold">Back-end consulta o banco</p>
+                                        <p class="text-sm text-gray-600">Busca os dados</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4 p-3 bg-yellow-50 rounded-lg">
+                                    <div class="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+                                    <div>
+                                        <p class="font-semibold">Banco retorna dados → Back-end organiza em JSON</p>
+                                        <p class="text-sm text-gray-600">Formatação da resposta</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4 p-3 bg-pink-50 rounded-lg">
+                                    <div class="bg-pink-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
+                                    <div>
+                                        <p class="font-semibold">Front-end recebe JSON e atualiza interface</p>
+                                        <p class="text-sm text-gray-600">Exibição para o usuário</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-gray-800 mb-3">📡 Protocolos:</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>• <strong>HTTP/HTTPS:</strong> Protocolo de comunicação</li>
+                                    <li>• <strong>REST:</strong> Estilo de arquitetura de API</li>
+                                    <li>• <strong>JSON:</strong> Formato de dados</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-gray-800 mb-3">🔄 Alternativas:</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>• <strong>GraphQL:</strong> Query language flexível</li>
+                                    <li>• <strong>WebSockets:</strong> Comunicação em tempo real</li>
+                                    <li>• <strong>gRPC:</strong> Comunicação de alta performance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                title: "☁️ Infraestrutura",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-teal-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-teal-800 mb-4">Onde Tudo Funciona?</h3>
+                            <p class="text-gray-700 mb-4">
+                                A <span class="highlight">infraestrutura</span> é o ambiente onde sua aplicação roda, incluindo servidores, segurança e deploy.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-bold text-blue-800 mb-4">🌐 Servidores Web</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                                        <span class="text-sm"><strong>Nginx:</strong> Servidor web rápido</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                                        <span class="text-sm"><strong>Apache:</strong> Servidor tradicional</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                                        <span class="text-sm"><strong>CDN:</strong> Entrega global de conteúdo</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-bold text-purple-800 mb-4">☁️ Nuvem</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                                        <span class="text-sm"><strong>AWS:</strong> Amazon Web Services</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                                        <span class="text-sm"><strong>Azure:</strong> Microsoft Cloud</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
+                                        <span class="text-sm"><strong>GCP:</strong> Google Cloud Platform</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-6 rounded-lg">
+                            <h4 class="font-bold mb-4">🐳 Containerização com Docker</h4>
+                            <div class="code-example bg-black p-4 rounded text-green-400 font-mono text-sm">
+                                <p># Dockerfile exemplo</p>
+                                <p>FROM openjdk:17-jdk-slim</p>
+                                <p>COPY target/app.jar app.jar</p>
+                                <p>EXPOSE 8080</p>
+                                <p>CMD ["java", "-jar", "app.jar"]</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-400">
+                            <h4 class="font-bold text-red-800 mb-3">🔒 Segurança Essencial:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> <strong>HTTPS:</strong> Criptografia de dados</li>
+                                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> <strong>JWT:</strong> Tokens de autenticação</li>
+                                </ul>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> <strong>OAuth2:</strong> Login social</li>
+                                    <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> <strong>CORS:</strong> Controle de origem</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function showStep(stepNumber) {
+            currentStep = stepNumber;
+            completedSteps.add(stepNumber);
+            
+            // Update progress
+            updateProgress();
+            
+            // Update active card
+            document.querySelectorAll('.step-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-step="${stepNumber}"]`).classList.add('active');
+            
+            // Show content
+            const content = stepContents[stepNumber];
+            document.getElementById('content-area').innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">${content.title}</h2>
+                    ${content.content}
+                </div>
+                <div class="flex justify-between items-center mt-8 pt-6 border-t">
+                    <button onclick="previousStep()" class="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors ${stepNumber === 1 ? 'invisible' : ''}">
+                        ← Anterior
+                    </button>
+                    <div class="text-sm text-gray-500">
+                        ${stepNumber} de 5
+                    </div>
+                    <button onclick="nextStep()" class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors ${stepNumber === 5 ? 'hidden' : ''}">
+                        Próximo →
+                    </button>
+                    ${stepNumber === 5 ? '<button onclick="showQuiz()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Finalizar 🎉</button>' : ''}
+                </div>
+            `;
+        }
+
+        function updateProgress() {
+            const progress = (completedSteps.size / 5) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = completedSteps.size;
+        }
+
+        function nextStep() {
+            if (currentStep < 5) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function startTour() {
+            showStep(1);
+        }
+
+        function showQuiz() {
+            document.getElementById('quiz-section').style.display = 'block';
+            document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function startQuiz() {
+            window.location.href = 'quiz.html';
+        }
+
+        // Event listeners for step cards
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const step = parseInt(card.dataset.step);
+                showStep(step);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9800e17f7622c618',t:'MTc1ODAzMTEyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

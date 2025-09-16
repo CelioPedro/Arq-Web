@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Arquitetura Web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        .question-card.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .question-card.inactive {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+        .option {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .option.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .option.correct {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🧠 Quiz de Arquitetura Web</h1>
+            <p class="text-lg text-gray-600">Teste seus conhecimentos sobre as camadas da arquitetura web</p>
+            <div class="mt-4">
+                <span class="text-sm text-gray-500">Pergunta <span id="current-question">1</span> de <span id="total-questions">5</span></span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div id="quiz-progress" class="bg-blue-500 h-3 rounded-full transition-all duration-500" style="width: 20%"></div>
+            </div>
+        </div>
+
+        <!-- Question Area -->
+        <div id="question-container" class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <!-- Questions will be loaded here -->
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center">
+            <button id="prev-btn" onclick="previousQuestion()" class="flex items-center px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                ← Anterior
+            </button>
+            <button id="next-btn" onclick="nextQuestion()" class="flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Próximo →
+            </button>
+            <button id="finish-btn" onclick="finishQuiz()" class="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors hidden">
+                Finalizar Quiz
+            </button>
+        </div>
+
+        <!-- Results Modal -->
+        <div id="results-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center">
+                <div id="results-content">
+                    <!-- Results will be shown here -->
+                </div>
+                <div class="mt-6 space-y-3">
+                    <button onclick="restartQuiz()" class="w-full bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
+                        Refazer Quiz
+                    </button>
+                    <button onclick="goBack()" class="w-full bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                        Voltar ao Fluxo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "O que é o Front-end (Cliente) na arquitetura web?",
+                options: [
+                    "O servidor que processa as regras de negócio",
+                    "O navegador do usuário que executa HTML, CSS e JavaScript",
+                    "O banco de dados que armazena informações",
+                    "A infraestrutura de nuvem"
+                ],
+                correct: 1,
+                explanation: "O front-end é o cliente, executado no navegador do usuário, responsável pela interface gráfica e interações."
+            },
+            {
+                question: "Qual é a principal responsabilidade do Back-end (Servidor)?",
+                options: [
+                    "Renderizar a interface gráfica",
+                    "Processar regras de negócio e APIs REST",
+                    "Armazenar dados permanentemente",
+                    "Entregar conteúdo estático"
+                ],
+                correct: 1,
+                explanation: "O back-end processa a lógica de negócio, recebe requisições HTTP e se comunica com o banco de dados."
+            },
+            {
+                question: "O que o Banco de Dados armazena na arquitetura web?",
+                options: [
+                    "Código JavaScript temporário",
+                    "Informações permanentes como usuários e produtos",
+                    "Estilos CSS da interface",
+                    "Configurações do servidor web"
+                ],
+                correct: 1,
+                explanation: "O banco de dados armazena dados persistentes que precisam ser mantidos entre sessões."
+            },
+            {
+                question: "Como as camadas da arquitetura web se comunicam?",
+                options: [
+                    "Através de arquivos locais",
+                    "Usando protocolos HTTP/HTTPS e APIs REST com JSON",
+                    "Por meio de WebSockets apenas",
+                    "Diretamente via banco de dados"
+                ],
+                correct: 1,
+                explanation: "A comunicação acontece via HTTP/HTTPS, com APIs REST trocando dados em formato JSON."
+            },
+            {
+                question: "O que inclui a Infraestrutura na arquitetura web?",
+                options: [
+                    "Apenas o código HTML",
+                    "Servidores, segurança, deploy e serviços de nuvem",
+                    "Somente o banco de dados",
+                    "A lógica de JavaScript"
+                ],
+                correct: 1,
+                explanation: "A infraestrutura engloba servidores web, segurança, containerização (Docker) e provedores de nuvem."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let selectedAnswers = new Array(questions.length).fill(null);
+        let showResults = false;
+
+        function loadQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('question-container');
+
+            container.innerHTML = `
+                <div class="question-card active">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">${question.question}</h2>
+                    <div class="space-y-4">
+                        ${question.options.map((option, optionIndex) => `
+                            <div class="option bg-gray-50 border-2 border-gray-200 rounded-lg p-4 ${getOptionClass(index, optionIndex)}" 
+                                 onclick="selectOption(${optionIndex})" 
+                                 data-option="${optionIndex}">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 border-2 border-gray-300 rounded-full mr-4 flex items-center justify-center">
+                                        ${selectedAnswers[index] === optionIndex ? '<div class="w-3 h-3 bg-blue-500 rounded-full"></div>' : ''}
+                                    </div>
+                                    <span class="text-gray-700">${option}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${showResults && selectedAnswers[index] !== null ? `
+                        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-blue-800">
+                                <strong>Explicação:</strong> ${question.explanation}
+                            </p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            updateNavigation();
+            updateProgress();
+        }
+
+        function getOptionClass(questionIndex, optionIndex) {
+            if (!showResults) {
+                return selectedAnswers[questionIndex] === optionIndex ? 'selected' : '';
+            }
+
+            const correct = questions[questionIndex].correct;
+            if (optionIndex === correct) {
+                return 'correct';
+            }
+            if (selectedAnswers[questionIndex] === optionIndex && optionIndex !== correct) {
+                return 'incorrect';
+            }
+            return '';
+        }
+
+        function selectOption(optionIndex) {
+            if (showResults) return;
+
+            selectedAnswers[currentQuestionIndex] = optionIndex;
+            loadQuestion(currentQuestionIndex);
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const finishBtn = document.getElementById('finish-btn');
+
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = selectedAnswers[currentQuestionIndex] === null;
+
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.classList.add('hidden');
+                finishBtn.classList.remove('hidden');
+                finishBtn.disabled = selectedAnswers[currentQuestionIndex] === null;
+            } else {
+                nextBtn.classList.remove('hidden');
+                finishBtn.classList.add('hidden');
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function finishQuiz() {
+            showResults = true;
+            loadQuestion(currentQuestionIndex); // Reload to show explanations
+
+            const correctAnswers = selectedAnswers.reduce((count, answer, index) => {
+                return count + (answer === questions[index].correct ? 1 : 0);
+            }, 0);
+
+            const percentage = Math.round((correctAnswers / questions.length) * 100);
+
+            const resultsContent = document.getElementById('results-content');
+            resultsContent.innerHTML = `
+                <div class="text-6xl mb-4">${percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Quiz Concluído!</h3>
+                <p class="text-gray-600 mb-4">Você acertou ${correctAnswers} de ${questions.length} perguntas (${percentage}%)</p>
+                <div class="text-left bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">Revisão das Respostas:</h4>
+                    <ul class="space-y-1 text-sm">
+                        ${questions.map((q, index) => `
+                            <li class="${selectedAnswers[index] === q.correct ? 'text-green-600' : 'text-red-600'}">
+                                ${index + 1}. ${selectedAnswers[index] === q.correct ? '✓' : '✗'} ${q.question.split('?')[0]}?
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('results-modal').classList.remove('hidden');
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            selectedAnswers = new Array(questions.length).fill(null);
+            showResults = false;
+            document.getElementById('results-modal').classList.add('hidden');
+            loadQuestion(0);
+        }
+
+        function goBack() {
+            window.location.href = 'fluxo.html';
+        }
+
+        // Initialize quiz
+        loadQuestion(0);
+    </script>
+</body>
+</html>

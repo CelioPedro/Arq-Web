@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha seu Tópico de Estudo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .icon-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-white mb-4">
+                Escolha seu Tópico de Estudo
+            </h1>
+            <p class="text-xl text-white/80 max-w-2xl mx-auto">
+                Selecione entre dois temas fundamentais para desenvolvimento web e vamos começar sua jornada de aprendizado!
+            </p>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            
+            <!-- Web Architecture Card -->
+            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg cursor-pointer" onclick="selectTopic('web-architecture')">
+                <div class="text-center">
+                    <!-- Icon -->
+                    <div class="w-24 h-24 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center icon-bounce">
+                        <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                        Arquitetura Web Conceitual
+                    </h2>
+                    
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Aprenda os fundamentos da arquitetura web, incluindo cliente-servidor, APIs, bancos de dados, e como os sistemas web funcionam em conjunto.
+                    </p>
+                    
+                    <!-- Topics List -->
+                    <div class="text-left space-y-3 mb-8">
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                            Frontend vs Backend
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                            APIs e Comunicação
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                            Bancos de Dados
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                            Escalabilidade
+                        </div>
+                    </div>
+                    
+                    <button onclick="selectTopic('web-architecture')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors duration-200">
+                        Estudar Arquitetura Web
+                    </button>
+                </div>
+            </div>
+
+            <!-- Git & GitHub Card -->
+            <div class="card-hover bg-white rounded-2xl p-8 shadow-lg cursor-pointer" onclick="selectTopic('git-github')">
+                <div class="text-center">
+                    <!-- Icon -->
+                    <div class="w-24 h-24 mx-auto mb-6 bg-purple-100 rounded-full flex items-center justify-center icon-bounce" style="animation-delay: 0.5s;">
+                        <svg class="w-12 h-12 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </div>
+                    
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                        Git & GitHub
+                    </h2>
+                    
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Domine o controle de versão com Git e colaboração no GitHub. Essencial para qualquer desenvolvedor moderno.
+                    </p>
+                    
+                    <!-- Topics List -->
+                    <div class="text-left space-y-3 mb-8">
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                            Comandos Git Básicos
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                            Branches e Merging
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                            GitHub Workflow
+                        </div>
+                        <div class="flex items-center text-gray-700">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                            Colaboração em Equipe
+                        </div>
+                    </div>
+                    
+                    <button onclick="selectTopic('git-github')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-4 px-6 rounded-xl transition-colors duration-200">
+                        Estudar Git & GitHub
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selection Display -->
+        <div id="selection-display" class="hidden mt-12 text-center">
+            <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold text-white mb-4">Ótima Escolha!</h3>
+                <p id="selection-text" class="text-white/90 text-lg"></p>
+                <button onclick="resetSelection()" class="mt-6 bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200">
+                    Escolher Outro Tópico
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectTopic(topic) {
+            if (topic === 'web-architecture') {
+                window.location.href = 'fluxo.html';
+            } else if (topic === 'git-github') {
+                window.location.href = 'gitxgithub.html';
+            }
+        }
+        
+        function resetSelection() {
+            const selectionDisplay = document.getElementById('selection-display');
+            selectionDisplay.classList.add('hidden');
+            
+            // Reset card styles
+            document.querySelectorAll('.card-hover').forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            });
+            
+            // Scroll back to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9802f069f020f17f',t:'MTc1ODA1MjcxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

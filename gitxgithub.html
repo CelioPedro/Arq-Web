@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git x GitHub - Arquitetura Conceitual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .step-card.active {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+        .flow-arrow {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .terminal {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            border-radius: 8px;
+        }
+        .terminal-header {
+            background: #333;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px 8px 0 0;
+            font-size: 12px;
+        }
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .prompt {
+            color: #00ff00;
+            margin-right: 8px;
+        }
+        .command {
+            color: #ffffff;
+        }
+        .output {
+            color: #ffff00;
+            margin-left: 16px;
+        }
+        .git-flow {
+            position: relative;
+        }
+        .commit-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .branch-line {
+            height: 2px;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+        }
+        .highlight {
+            background: linear-gradient(120deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .bounce {
+            animation: bounce 0.6s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-30px,0); }
+            70% { transform: translate3d(0,-15px,0); }
+            90% { transform: translate3d(0,-4px,0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🏗️ Git x GitHub</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Entenda a diferença e como trabalham juntos no controle de versão
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-600">Progresso do Aprendizado</span>
+                <span class="text-sm text-gray-600"><span id="progress-text">0</span>/5 Conceitos</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Main Architecture Overview -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Git Local -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="1">
+                <div class="text-center">
+                    <div class="text-5xl mb-4">💻</div>
+                    <h3 class="text-xl font-bold text-green-600 mb-2">Git (Local)</h3>
+                    <p class="text-sm text-gray-600 mb-4">Sistema de controle de versão</p>
+                    <div class="space-y-2">
+                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Commits</span>
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Branches</span>
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Histórico</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow Arrow -->
+            <div class="flex items-center justify-center">
+                <div class="text-center">
+                    <div class="flow-arrow text-3xl text-blue-500 mb-2">⇄</div>
+                    <p class="text-sm text-gray-600">push / pull</p>
+                </div>
+            </div>
+
+            <!-- GitHub Remote -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="2">
+                <div class="text-center">
+                    <div class="text-5xl mb-4">☁️</div>
+                    <h3 class="text-xl font-bold text-blue-600 mb-2">GitHub (Remoto)</h3>
+                    <p class="text-sm text-gray-600 mb-4">Plataforma de colaboração</p>
+                    <div class="space-y-2">
+                        <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">Pull Requests</span>
+                        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Issues</span>
+                        <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Actions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Content Area -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div id="content-area">
+                <div class="text-center py-12">
+                    <div class="text-6xl mb-4">🎯</div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Bem-vindo ao Git & GitHub!</h2>
+                    <p class="text-gray-600 mb-6">Clique nos cards acima ou inicie o tour para aprender sobre controle de versão</p>
+                    <div class="space-x-4">
+                        <button onclick="startTour()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                            🚀 Iniciar Tour Guiado
+                        </button>
+                        <button onclick="showTerminal()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                            💻 Simulador Terminal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Concepts -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Workflow -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="3">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🔄</div>
+                    <h3 class="text-lg font-bold text-purple-600 mb-2">Fluxo de Trabalho</h3>
+                    <p class="text-sm text-gray-600">Clone → Edit → Commit → Push</p>
+                </div>
+            </div>
+
+            <!-- Commands -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="4">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">⌨️</div>
+                    <h3 class="text-lg font-bold text-indigo-600 mb-2">Comandos Git</h3>
+                    <p class="text-sm text-gray-600">init, add, commit, push, pull</p>
+                </div>
+            </div>
+
+            <!-- GitHub Pages -->
+            <div class="step-card bg-white rounded-xl p-6 border-2 border-gray-200 shadow-lg" data-step="5">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🌐</div>
+                    <h3 class="text-lg font-bold text-teal-600 mb-2">GitHub Pages</h3>
+                    <p class="text-sm text-gray-600">Hospedagem gratuita</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="bg-gradient-to-r from-green-500 to-blue-500 rounded-xl p-8 text-white text-center" style="display: none;">
+            <h3 class="text-2xl font-bold mb-4">🧠 Teste seu Conhecimento!</h3>
+            <p class="mb-6">Você completou o tour! Que tal testar o que aprendeu sobre Git e GitHub?</p>
+            <button onclick="window.location.href='quizgitxgithub.html'" class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Iniciar Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        let completedSteps = new Set();
+
+        const stepContents = {
+            1: {
+                title: "💻 Git (Local)",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">O que é o Git?</h3>
+                            <p class="text-gray-700 mb-4">
+                                Git é um <span class="highlight">sistema de controle de versão distribuído</span> que roda na sua máquina local.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-green-500 text-2xl mb-2">📝</div>
+                                    <h4 class="font-bold text-green-600">Commits</h4>
+                                    <p class="text-sm text-gray-600">Versões salvas do projeto</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-blue-500 text-2xl mb-2">🌿</div>
+                                    <h4 class="font-bold text-blue-600">Branches</h4>
+                                    <p class="text-sm text-gray-600">Linhas de desenvolvimento</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-3">🎯 Principais Funções:</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Rastrear mudanças nos arquivos</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Criar versões (commits) do projeto</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Permitir voltar no tempo</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✓</span> Gerenciar branches paralelos</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                            <h4 class="font-bold text-blue-800 mb-2">💡 Importante:</h4>
+                            <p class="text-blue-700">
+                                Git funciona <strong>completamente offline</strong>! Você não precisa de internet para usar Git.
+                            </p>
+                        </div>
+
+                        <div class="terminal">
+                            <div class="terminal-header">Git Bash - Comandos Básicos</div>
+                            <div class="p-4">
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git init</span>
+                                </div>
+                                <div class="output">Initialized empty Git repository</div>
+                                
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git add .</span>
+                                </div>
+                                
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git commit -m "Primeira versão"</span>
+                                </div>
+                                <div class="output">1 file changed, 10 insertions(+)</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            2: {
+                title: "☁️ GitHub (Remoto)",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">O que é o GitHub?</h3>
+                            <p class="text-gray-700 mb-4">
+                                GitHub é uma <span class="highlight">plataforma online</span> que hospeda repositórios Git e adiciona recursos de colaboração.
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-gray-500 text-2xl mb-2">🔄</div>
+                                    <h4 class="font-bold text-gray-600">Pull Requests</h4>
+                                    <p class="text-sm text-gray-600">Revisão de código</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-yellow-500 text-2xl mb-2">🐛</div>
+                                    <h4 class="font-bold text-yellow-600">Issues</h4>
+                                    <p class="text-sm text-gray-600">Rastreamento de bugs</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-red-500 text-2xl mb-2">⚡</div>
+                                    <h4 class="font-bold text-red-600">Actions</h4>
+                                    <p class="text-sm text-gray-600">CI/CD automático</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-3">🌟 Principais Recursos:</h4>
+                            <ul class="space-y-2 text-gray-700">
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Centralizar código para colaboração</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Sincronizar entre desenvolvedores</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Backup automático na nuvem</li>
+                                <li class="flex items-center"><span class="text-blue-500 mr-2">✓</span> Hospedagem gratuita (GitHub Pages)</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                            <h4 class="font-bold text-yellow-800 mb-2">⚠️ Lembre-se:</h4>
+                            <p class="text-yellow-700">
+                                GitHub <strong>não substitui</strong> o Git! Ele é apenas o "servidor remoto" onde o Git se conecta.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border-2 border-blue-200">
+                            <h4 class="font-bold text-blue-800 mb-4">🔗 Conectando Git ao GitHub:</h4>
+                            <div class="terminal">
+                                <div class="terminal-header">Conectando repositório local ao remoto</div>
+                                <div class="p-4">
+                                    <div class="command-line">
+                                        <span class="prompt">$</span>
+                                        <span class="command">git remote add origin https://github.com/user/repo.git</span>
+                                    </div>
+                                    
+                                    <div class="command-line">
+                                        <span class="prompt">$</span>
+                                        <span class="command">git push -u origin main</span>
+                                    </div>
+                                    <div class="output">Enumerating objects: 3, done.</div>
+                                    <div class="output">Writing objects: 100% (3/3), done.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                title: "🔄 Fluxo de Trabalho",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-purple-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">Fluxo Conceitual Completo</h3>
+                            <p class="text-gray-700 mb-4">
+                                Entenda como <span class="highlight">Git e GitHub trabalham juntos</span> no dia a dia do desenvolvimento.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border-2 border-purple-200">
+                            <h4 class="font-bold text-purple-800 mb-4">📋 Passo a Passo do Fluxo:</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg">
+                                    <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">1</div>
+                                    <div>
+                                        <p class="font-semibold">Desenvolvedor clona ou cria repositório</p>
+                                        <p class="text-sm text-gray-600">git clone ou git init</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-green-50 rounded-lg">
+                                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">2</div>
+                                    <div>
+                                        <p class="font-semibold">Trabalha localmente</p>
+                                        <p class="text-sm text-gray-600">Git acompanha todas as mudanças</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-yellow-50 rounded-lg">
+                                    <div class="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">3</div>
+                                    <div>
+                                        <p class="font-semibold">Faz commits</p>
+                                        <p class="text-sm text-gray-600">Salva versões no repositório local</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-red-50 rounded-lg">
+                                    <div class="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">4</div>
+                                    <div>
+                                        <p class="font-semibold">git push → envia para GitHub</p>
+                                        <p class="text-sm text-gray-600">Sincroniza com o repositório remoto</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-indigo-50 rounded-lg">
+                                    <div class="bg-indigo-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">5</div>
+                                    <div>
+                                        <p class="font-semibold">Outros devs fazem git pull</p>
+                                        <p class="text-sm text-gray-600">Baixam as atualizações para seus locais</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="git-flow bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-4">🌿 Visualização de Branches:</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-2">
+                                    <div class="commit-dot"></div>
+                                    <div class="branch-line flex-1"></div>
+                                    <span class="text-sm text-gray-600">main branch</span>
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <div class="commit-dot bg-blue-500"></div>
+                                    <div class="branch-line flex-1 bg-blue-500"></div>
+                                    <span class="text-sm text-gray-600">feature branch</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="commit-dot bg-purple-500"></div>
+                                    <div class="branch-line flex-1 bg-purple-500"></div>
+                                    <span class="text-sm text-gray-600">merge commit</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
+                            <h4 class="font-bold text-green-800 mb-2">🎯 Resumo:</h4>
+                            <p class="text-green-700">
+                                <strong>Git = motor local</strong> | <strong>GitHub = colaboração remota</strong> | <strong>Integração = push/pull</strong>
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            4: {
+                title: "⌨️ Comandos Git Essenciais",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-indigo-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-indigo-800 mb-4">Comandos Git no Terminal</h3>
+                            <p class="text-gray-700 mb-4">
+                                Aprenda os <span class="highlight">comandos essenciais</span> para trabalhar com Git no dia a dia.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-bold text-gray-800 mb-4">🚀 Comandos Iniciais</h4>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-blue-600">git init</code>
+                                        <span class="text-gray-600">Iniciar repositório</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-blue-600">git clone URL</code>
+                                        <span class="text-gray-600">Clonar repositório</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-blue-600">git status</code>
+                                        <span class="text-gray-600">Ver status</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-bold text-gray-800 mb-4">💾 Salvando Mudanças</h4>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-green-600">git add .</code>
+                                        <span class="text-gray-600">Adicionar arquivos</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-green-600">git commit -m</code>
+                                        <span class="text-gray-600">Salvar versão</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-green-600">git log</code>
+                                        <span class="text-gray-600">Ver histórico</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="terminal">
+                            <div class="terminal-header">Exemplo Prático - Criando um Projeto</div>
+                            <div class="p-4 space-y-2">
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">mkdir meu-site</span>
+                                </div>
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">cd meu-site</span>
+                                </div>
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git init</span>
+                                </div>
+                                <div class="output">Initialized empty Git repository in /meu-site/.git/</div>
+                                
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git add .</span>
+                                </div>
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git commit -m "Primeira versão do site"</span>
+                                </div>
+                                <div class="output">[main (root-commit) a1b2c3d] Primeira versão do site</div>
+                                <div class="output">1 file changed, 10 insertions(+)</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-bold text-gray-800 mb-4">🌐 Comandos Remotos</h4>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-purple-600">git remote add</code>
+                                        <span class="text-gray-600">Conectar remoto</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-purple-600">git push</code>
+                                        <span class="text-gray-600">Enviar mudanças</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-purple-600">git pull</code>
+                                        <span class="text-gray-600">Baixar mudanças</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-lg border">
+                                <h4 class="font-bold text-gray-800 mb-4">🌿 Branches</h4>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-orange-600">git branch</code>
+                                        <span class="text-gray-600">Listar branches</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-orange-600">git checkout</code>
+                                        <span class="text-gray-600">Trocar branch</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                        <code class="text-orange-600">git merge</code>
+                                        <span class="text-gray-600">Unir branches</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                title: "🌐 GitHub Pages",
+                content: `
+                    <div class="space-y-6">
+                        <div class="bg-teal-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-teal-800 mb-4">Hospedagem Gratuita com GitHub Pages</h3>
+                            <p class="text-gray-700 mb-4">
+                                Transforme seu repositório em um <span class="highlight">site online gratuito</span> em poucos cliques!
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border-2 border-teal-200">
+                            <h4 class="font-bold text-teal-800 mb-4">🚀 Passo a Passo para Publicar:</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg">
+                                    <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">1</div>
+                                    <div>
+                                        <p class="font-semibold">Crie o repositório no GitHub</p>
+                                        <p class="text-sm text-gray-600">New Repository → nome do projeto</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-green-50 rounded-lg">
+                                    <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">2</div>
+                                    <div>
+                                        <p class="font-semibold">Conecte seu projeto local</p>
+                                        <p class="text-sm text-gray-600">git remote add origin + git push</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-purple-50 rounded-lg">
+                                    <div class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">3</div>
+                                    <div>
+                                        <p class="font-semibold">Ative GitHub Pages</p>
+                                        <p class="text-sm text-gray-600">Settings → Pages → Source: main branch</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-yellow-50 rounded-lg">
+                                    <div class="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">4</div>
+                                    <div>
+                                        <p class="font-semibold">Seu site está online!</p>
+                                        <p class="text-sm text-gray-600">https://seu-usuario.github.io/nome-repo/</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="terminal">
+                            <div class="terminal-header">Comandos para Publicar Site</div>
+                            <div class="p-4 space-y-2">
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git remote add origin https://github.com/usuario/meu-site.git</span>
+                                </div>
+                                
+                                <div class="command-line">
+                                    <span class="prompt">$</span>
+                                    <span class="command">git push -u origin main</span>
+                                </div>
+                                <div class="output">Enumerating objects: 5, done.</div>
+                                <div class="output">Total 5 (delta 0), reused 0 (delta 0)</div>
+                                <div class="output">To https://github.com/usuario/meu-site.git</div>
+                                <div class="output"> * [new branch]      main -> main</div>
+                                
+                                <div class="text-green-400 mt-4">✅ Site publicado em: https://usuario.github.io/meu-site/</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-400">
+                                <h4 class="font-bold text-green-800 mb-3">✅ Vantagens:</h4>
+                                <ul class="space-y-2 text-sm text-green-700">
+                                    <li>• Hospedagem 100% gratuita</li>
+                                    <li>• Atualização automática</li>
+                                    <li>• HTTPS incluído</li>
+                                    <li>• Domínio personalizado opcional</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-400">
+                                <h4 class="font-bold text-blue-800 mb-3">🔄 Atualizações:</h4>
+                                <div class="text-sm text-blue-700 space-y-2">
+                                    <p>Sempre que você fizer:</p>
+                                    <code class="block bg-white p-2 rounded">git push</code>
+                                    <p>O site é atualizado automaticamente!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-gray-800 mb-4">📁 Estrutura Recomendada:</h4>
+                            <div class="terminal">
+                                <div class="terminal-header">Estrutura do Projeto</div>
+                                <div class="p-4 text-sm">
+                                    <div class="text-yellow-400">meu-site/</div>
+                                    <div class="ml-4 text-white">├── index.html</div>
+                                    <div class="ml-4 text-white">├── style.css</div>
+                                    <div class="ml-4 text-white">├── script.js</div>
+                                    <div class="ml-4 text-white">└── README.md</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function showStep(stepNumber) {
+            currentStep = stepNumber;
+            completedSteps.add(stepNumber);
+            
+            // Update progress
+            updateProgress();
+            
+            // Update active card
+            document.querySelectorAll('.step-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-step="${stepNumber}"]`).classList.add('active');
+            
+            // Show content
+            const content = stepContents[stepNumber];
+            document.getElementById('content-area').innerHTML = `
+                <div class="fade-in mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">${content.title}</h2>
+                    ${content.content}
+                </div>
+                <div class="flex justify-between items-center mt-8 pt-6 border-t">
+                    <button onclick="previousStep()" class="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors ${stepNumber === 1 ? 'invisible' : ''}">
+                        ← Anterior
+                    </button>
+                    <div class="text-sm text-gray-500">
+                        ${stepNumber} de 5
+                    </div>
+                    <button onclick="nextStep()" class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors ${stepNumber === 5 ? 'hidden' : ''}">
+                        Próximo →
+                    </button>
+                    ${stepNumber === 5 ? '<button onclick="showQuiz()" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">Finalizar 🎉</button>' : ''}
+                </div>
+            `;
+        }
+
+        function showTerminal() {
+            document.getElementById('content-area').innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">💻 Simulador de Terminal Git</h2>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">🎯 Exercício Prático:</h3>
+                        <p class="text-gray-700 mb-4">Siga os passos abaixo e digite os comandos no terminal simulado:</p>
+                        <ol class="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                            <li>Inicialize um repositório Git</li>
+                            <li>Adicione arquivos ao staging</li>
+                            <li>Faça seu primeiro commit</li>
+                            <li>Conecte ao GitHub</li>
+                            <li>Envie o código para o remoto</li>
+                        </ol>
+                    </div>
+
+                    <div class="terminal mb-6">
+                        <div class="terminal-header">
+                            Git Bash - Simulador Interativo
+                            <span class="float-right text-xs">Digite os comandos abaixo</span>
+                        </div>
+                        <div class="p-4">
+                            <div id="terminal-output"></div>
+                            <div class="command-line">
+                                <span class="prompt">$</span>
+                                <input type="text" id="terminal-input" class="bg-transparent text-white outline-none flex-1 ml-2" 
+                                       placeholder="Digite um comando Git..." onkeypress="handleCommand(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg border">
+                            <h4 class="font-bold text-gray-800 mb-4">📚 Comandos Disponíveis:</h4>
+                            <div class="space-y-2 text-sm">
+                                <code class="block bg-gray-100 p-2 rounded">git init</code>
+                                <code class="block bg-gray-100 p-2 rounded">git add .</code>
+                                <code class="block bg-gray-100 p-2 rounded">git commit -m "mensagem"</code>
+                                <code class="block bg-gray-100 p-2 rounded">git status</code>
+                                <code class="block bg-gray-100 p-2 rounded">git log</code>
+                                <code class="block bg-gray-100 p-2 rounded">clear</code>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-lg border">
+                            <h4 class="font-bold text-gray-800 mb-4">🏆 Progresso:</h4>
+                            <div id="exercise-progress" class="space-y-2">
+                                <div class="flex items-center">
+                                    <span id="step1" class="w-4 h-4 rounded-full bg-gray-300 mr-3"></span>
+                                    <span class="text-sm">git init</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span id="step2" class="w-4 h-4 rounded-full bg-gray-300 mr-3"></span>
+                                    <span class="text-sm">git add .</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span id="step3" class="w-4 h-4 rounded-full bg-gray-300 mr-3"></span>
+                                    <span class="text-sm">git commit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center mt-8">
+                        <button onclick="startTour()" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            📚 Voltar ao Tour
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('terminal-input').focus();
+        }
+
+        let exerciseStep = 0;
+        const exerciseSteps = ['git init', 'git add .', 'git commit'];
+
+        function handleCommand(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('terminal-input');
+                const command = input.value.trim();
+                const output = document.getElementById('terminal-output');
+                
+                // Add command to output
+                output.innerHTML += `
+                    <div class="command-line">
+                        <span class="prompt">$</span>
+                        <span class="command">${command}</span>
+                    </div>
+                `;
+                
+                // Process command
+                let response = '';
+                if (command === 'git init') {
+                    response = 'Initialized empty Git repository in /project/.git/';
+                    markStepComplete(1);
+                } else if (command === 'git add .') {
+                    response = '';
+                    markStepComplete(2);
+                } else if (command.startsWith('git commit')) {
+                    response = '[main (root-commit) a1b2c3d] Initial commit\n1 file changed, 10 insertions(+)';
+                    markStepComplete(3);
+                } else if (command === 'git status') {
+                    response = 'On branch main\nnothing to commit, working tree clean';
+                } else if (command === 'git log') {
+                    response = 'commit a1b2c3d4e5f6g7h8i9j0\nAuthor: Developer <dev@example.com>\nDate: ' + new Date().toDateString() + '\n\n    Initial commit';
+                } else if (command === 'clear') {
+                    output.innerHTML = '';
+                    input.value = '';
+                    return;
+                } else if (command === '') {
+                    input.value = '';
+                    return;
+                } else {
+                    response = `git: '${command}' is not a git command. See 'git --help'.`;
+                }
+                
+                if (response) {
+                    output.innerHTML += `<div class="output">${response}</div>`;
+                }
+                
+                input.value = '';
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        function markStepComplete(step) {
+            const stepElement = document.getElementById(`step${step}`);
+            if (stepElement) {
+                stepElement.classList.remove('bg-gray-300');
+                stepElement.classList.add('bg-green-500');
+                stepElement.innerHTML = '✓';
+                stepElement.classList.add('bounce');
+            }
+        }
+
+        function updateProgress() {
+            const progress = (completedSteps.size / 5) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = completedSteps.size;
+        }
+
+        function nextStep() {
+            if (currentStep < 5) {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+
+        function startTour() {
+            showStep(1);
+        }
+
+        function showQuiz() {
+            document.getElementById('quiz-section').style.display = 'block';
+            document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function startQuiz() {
+            alert('🎉 Parabéns! Você completou o aprendizado sobre Git e GitHub!\n\nAgora você entende:\n• A diferença entre Git (local) e GitHub (remoto)\n• Como funciona o fluxo de trabalho\n• Os comandos essenciais do Git\n• Como publicar sites com GitHub Pages\n\nContinue praticando! 💪');
+        }
+
+        // Event listeners for step cards
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const step = parseInt(card.dataset.step);
+                showStep(step);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9802f27c27f9f17f',t:'MTc1ODA1Mjc5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
